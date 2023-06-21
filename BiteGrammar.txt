@@ -1,0 +1,48 @@
+Bite {
+  program = declaration*
+  declaration = funcDeclaration
+  						| varDeclaration
+                        | statement
+
+  funcDeclaration = "recipe" space function block
+  function = id "(" parameters? ")"
+  parameters = id ("," id)*
+  
+  varDeclaration = "ingredient" space id ( "=" expression )?
+  
+  statement = forStatement| 
+  						ifStatement | 
+                        printStatement | 
+                        returnStatement | 
+                        whileStatement | 
+                        breakStatement|
+                        block
+  
+  //exprStatement = expression
+  
+  whileStatement = "whisk till"  expression  block 
+ //  forStatement = "fry" TO DO
+  ifStatement = "taste" expression block
+  							("add" block )?
+  printStatement = "plate" expression
+  returnStatement = "serve" expression
+  breakStatement = "stop_cooking"
+  
+  expression = assignment
+  
+  
+    
+    
+  block = "{" declaration* "}"
+  number = float | int
+  id = letter idchar*
+  idchar = "_" | alnum
+
+  int = digit+
+  float = digit+ "." digit+
+ 
+  
+  // TO DO - 
+//how to differentiate between statements and expressions in lang without semicolon ;
+
+}
