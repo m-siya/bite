@@ -1,6 +1,6 @@
 Bite {
-  program 		= 	declaration*
-  declaration 	= 	funcDeclaration | varDeclaration | statement
+  program 		= 	(line newline)* line 
+  line 	= 	funcDeclaration | varDeclaration | statement
 
   funcDeclaration = "recipe" space function block
   function = id "(" parameters? ")"
@@ -75,12 +75,12 @@ parenthesis
       | number
       | bool
     
-  block = "{" declaration* "}"
+  block = "{" (line newline)* line  "}"
   number = float | int
   id = letter idchar*
   idchar = "_" | alnum
 
-  bool = "t" | "f"
+  bool = "tasty" | "foul"
   boolnull = bool | "bland"
 
   int = digit+
