@@ -1,16 +1,14 @@
 Bite {
-  program = declaration*
-  declaration = funcDeclaration
-  						| varDeclaration
-                        | statement
+  program 		= 	declaration*
+  declaration 	= 	funcDeclaration | varDeclaration | statement
 
   funcDeclaration = "recipe" space function block
   function = id "(" parameters? ")"
   parameters = id ("," id)*
   
-  varDeclaration = "ingredient" space id ( "=" expression )?
+  varDeclaration = "ingredient" space id space ( "=" space expression )?
   
-  statement = forStatement| 
+  statement = 	forStatement |
   						ifStatement | 
                         printStatement | 
                         returnStatement | 
@@ -20,18 +18,57 @@ Bite {
   
   //exprStatement = expression
   
-  whileStatement = "whisk till"  expression  block 
- //  forStatement = "fry" TO DO
-  ifStatement = "taste" expression block
+  whileStatement = "whiskTill" space expression space block 
+  forStatement = "fry" space expression space block
+  ifStatement = "taste" space expression space block
   							("add" block )?
-  printStatement = "plate" expression
-  returnStatement = "serve" expression
-  breakStatement = "stop_cooking"
+  printStatement = "plate" space expression
+  returnStatement = "serve" space expression
+  breakStatement = "stopCooking"
   
-  expression = assignment
+expression =  logical | relational | arithmetic
   
+logical = and
+and =and "&&" or -- logicalAnd
+		| or
+or = or "||" not -- logicalOr
+  		| not 
+not = "!" parenthesis -- not
+        | relational
+        | arithmetic
+        | parenthesis
   
-    
+relational = isEqual
+isEqual = isEqual "==" notEqual -- equal
+		| notEqual 
+notEqual = notEqual "!=" gt -- notEqual
+		| gt
+gt = gt ">" lt -- greaterThan
+		| lt
+lt = lt "<" ge -- lessThan
+		| ge
+ge = ge ">=" le -- greaterEqual
+		| le
+le = le "<=" parenthesis -- lessEqual
+		| arithmetic
+		| parenthesis
+  
+arithmetic 
+	= sum
+sum 
+	= sum "+" product -- add
+  		| sum "-" product -- minus
+  		| product
+product 
+	= product "*" parenthesis -- multiply
+  		| product "/" parenthesis -- divide
+  		| parenthesis
+
+parenthesis
+	= "(" expression ")" -- paren
+  		| "-" parenthesis -- neg
+    	| id 
+        | number
     
   block = "{" declaration* "}"
   number = float | int
@@ -39,10 +76,6 @@ Bite {
   idchar = "_" | alnum
 
   int = digit+
-  float = digit+ "." digit+
- 
+  float = digit* "." digit+
   
-  // TO DO - 
-//how to differentiate between statements and expressions in lang without semicolon ;
-
 }
