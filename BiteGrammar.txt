@@ -8,13 +8,14 @@ Bite {
   
   varDeclaration = "ingredient" space id space ( "=" space expression )?
   
-  statement = 	forStatement |
-  						ifStatement | 
-                        printStatement | 
-                        returnStatement | 
-                        whileStatement | 
-                        breakStatement|
-                        block
+  statement = ifStatement | 
+              printStatement | 
+              returnStatement | 
+              whileStatement | 
+              breakStatement|
+              continueStatement |
+              assignment |
+              block
   
   //exprStatement = expression
   
@@ -25,6 +26,9 @@ Bite {
   printStatement = "plate" space expression
   returnStatement = "serve" space expression
   breakStatement = "stopCooking"
+  continueStatement = "keepCooking"
+
+assignment = id "=" expression
   
 expression =  logical | relational | arithmetic
   
@@ -68,12 +72,16 @@ parenthesis
 	= "(" expression ")" -- paren
   		| "-" parenthesis -- neg
     	| id 
-        | number
+      | number
+      | bool
     
   block = "{" declaration* "}"
   number = float | int
   id = letter idchar*
   idchar = "_" | alnum
+
+  bool = "t" | "f"
+  boolnull = bool | "bland"
 
   int = digit+
   float = digit* "." digit+
