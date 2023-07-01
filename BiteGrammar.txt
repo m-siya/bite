@@ -1,7 +1,8 @@
 Bite {
-  program 		= 	(line newline)* line 
-  line 	= 	funcDeclaration | varDeclaration | statement
+  program = (line newline)* line 
+  line = funcDeclaration | varDeclaration | functionCall | statement
 
+  functionCall = function
   funcDeclaration = "recipe" space function block
   function = id "(" parameters? ")"
   parameters = id ("," id)*
