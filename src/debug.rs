@@ -25,9 +25,10 @@ fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
     }
 
     let instruction = chunk.code[offset as usize];
-    match instruction {
-        opcode if opcode == OpCode::OP_RETURN as u8 => return simple_instruction("OP_RETURN", offset),
-        opcode if opcode == OpCode::OP_CONSTANT as u8 => return constant_instruction("OP_CONSTANT", chunk, offset),
+    let code: OpCode = instruction.into();
+    match code {
+        OpCode::OP_RETURN => return simple_instruction("OP_RETURN", offset),
+        OpCode::OP_CONSTANT => return constant_instruction("OP_CONSTANT", chunk, offset),
         _ => {
             println!("Unknown opcode {}", instruction);
             return offset + 1
