@@ -3,9 +3,13 @@ use value::Value;
 #[allow(non_camel_case_types)]
 pub enum OpCode {
    
-    OP_CONSTANT = 0,
-    OP_NEGATE = 1,
-    OP_RETURN = 2,
+    OP_CONSTANT,
+    OP_ADD,
+    OP_SUBTRACT,
+    OP_MULTIPLY,
+    OP_DIVIDE,
+    OP_NEGATE,
+    OP_RETURN,
 
 
 }
@@ -20,8 +24,12 @@ impl From<u8> for OpCode {
     fn from(index: u8) -> OpCode {
         match index {
             0 => OpCode::OP_CONSTANT,
-            1 => OpCode::OP_NEGATE,
-            2 => OpCode::OP_RETURN,
+            1 => OpCode::OP_ADD,
+            2 => OpCode::OP_SUBTRACT,
+            3 => OpCode::OP_MULTIPLY,
+            4 => OpCode::OP_DIVIDE
+            5 => OpCode::OP_NEGATE,
+            6 => OpCode::OP_RETURN,
             _ => !unimplemented!(),
         }
     }

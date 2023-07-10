@@ -29,6 +29,11 @@ fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
     match code {
         OpCode::OP_RETURN => return simple_instruction("OP_RETURN", offset),
         OpCode::OP_CONSTANT => return constant_instruction("OP_CONSTANT", chunk, offset),
+        OpCode::OP_NEGATE => return simple_instruction("OP_NEGATE", offset),
+        OpCode::OP_ADD => return simple_instruction("OP_ADD", offset),
+        OpCode::OP_SUBTRACT => return simple_instruction("OP_SUBTRACT", offset),
+        OpCode::OP_MULTIPLY => return simple_instruction("OP_MULTIPLY", offset),
+        OpCode::OP_DIVIDE => return simple_instruction("OP_DIVIDE", offset),
         _ => {
             println!("Unknown opcode {}", instruction);
             return offset + 1
