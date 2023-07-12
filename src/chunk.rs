@@ -1,4 +1,4 @@
-use value::Value;
+//use value::Value;
 
 #[allow(non_camel_case_types)]
 pub enum OpCode {
@@ -27,7 +27,7 @@ impl From<u8> for OpCode {
             1 => OpCode::OP_ADD,
             2 => OpCode::OP_SUBTRACT,
             3 => OpCode::OP_MULTIPLY,
-            4 => OpCode::OP_DIVIDE
+            4 => OpCode::OP_DIVIDE,
             5 => OpCode::OP_NEGATE,
             6 => OpCode::OP_RETURN,
             _ => !unimplemented!(),
