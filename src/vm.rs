@@ -31,7 +31,24 @@ impl VM {
         }
         println!();
 
+        //after #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+        macro_rules! BINARY_OP {
+            ($op:tt) => {
+                {
+                    let b = pop();
+                    let a = pop();
+                    push(a $op b);
+                }
+            }
+        }
+
+        //after #undef BINARY_OP
+        
+
+
         match code {
+            //TO DO
+
             //under case OP_CONSTANT.. Value constant = READ_CONSTANT();
             push(constant);
             //break;
@@ -40,7 +57,13 @@ impl VM {
                 printValue(pop());
                 println!();
             }
-            
+
+            //before case OP_RETURN
+            OpCode::OP_ADD => BINARY_OP(+);
+            OpCode::OP_SUBTRACT => BINARY_OP(-);
+            OpCode::OP_MULTIPLY => BINARY_OP(*);
+            OpCode::OP_DIVIDE => BINARY_OP(/);
+            OpCode::OP_NEGATE => push(-pop());
         }
     }
 

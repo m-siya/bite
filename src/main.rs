@@ -13,6 +13,19 @@ fn main() {
     chunk.write(OpCode::OP_CONSTANT as u8, 123);
     chunk.write(constant as u8, 123);
 
+    constant = chunk.add_constant(Value::Number(3.4));
+    chunk.write(OpCode::OP_CONSTANT as u8, 123);
+    chunk.write(constant as u8, 123);
+
+    chunk.write(OpCode::OP_ADD as u8, 123);
+
+    constant = chunk.add_constant(Value::Number(5.6));
+    chunk.write(OpCode::OP_CONSTANT as u8, 123);
+    chunk.write(constant as u8, 123);
+
+    chunk.write(OpCode::OP_DIVIDE as u8, 123);
+    chunk.write(OpCode::OP_NEGATE as u8, 123);
+
     chunk.write(OpCode::OP_RETURN as u8, 123);
     debug::disassemble_chunk(&chunk, "test_chunk");
 
