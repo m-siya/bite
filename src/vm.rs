@@ -1,5 +1,7 @@
 use chunk::Chunk;
+use chunk::OpCode;
 use value::Value;
+
 
 pub struct VM {
     chunk: Chunk,
@@ -11,6 +13,35 @@ pub struct VM {
 impl VM {
     pub fn new() -> VM {
         //TO DO
+    }
+
+    pub fn free() {
+        //TO DO
+    }
+
+    fn run() -> InterpretResult {
+        //TO DO
+
+        //after #ifdef DEBUG_TRACE_EXECUTION
+        print!("          ");
+        for slot in vm.stack.iter() {
+            print!("[ ");
+            printValue(*slot);
+            print!(" ]");
+        }
+        println!();
+
+        match code {
+            //under case OP_CONSTANT.. Value constant = READ_CONSTANT();
+            push(constant);
+            //break;
+            
+            OpCode::OP_RETURN => {
+                printValue(pop());
+                println!();
+            }
+            
+        }
     }
 
     pub fn push(&mut self, value: Value) {
