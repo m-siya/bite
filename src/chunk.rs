@@ -1,4 +1,4 @@
-//use value::Value;
+use value::Value;
 
 #[allow(non_camel_case_types)]
 pub enum OpCode {

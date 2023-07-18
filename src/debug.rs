@@ -1,5 +1,5 @@
 //use crate::chunk;
-use value::Value;
+//use value::Value;
 use chunk::Chunk;
 use chunk::OpCode;
 
@@ -15,7 +15,7 @@ pub fn disassemble_chunk(chunk: &Chunk, name: &str) {
 }
 
 
-fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
+pub fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
     print!("{} ", offset);
 
     if offset > 0 && chunk.lines[offset as usize] == chunk.lines[offset as usize - 1] {

@@ -1,6 +1,7 @@
+#[allow(non_camel_case_types)]
 pub enum Value {
     VAL_BOOL(bool),
-    VAL_NIL(())
+    VAL_NIL(()),
     VAL_NUMBER(f64),
 }
 
@@ -8,7 +9,7 @@ impl From<Value> for bool {
     fn from(value: Value) -> bool {
         match value{
             Value::VAL_BOOL(bool_val) => bool_val,
-            _ => println!("Error. Value is not boolean"),
+            _ => panic!("Error. Value is not boolean"),
         }
     }
 }
@@ -17,7 +18,7 @@ impl From<Value> for f64 {
     fn from(value: Value) -> f64 {
         match value {
             Value::VAL_NUMBER(num_val) => num_val,
-            _ => println!("Error. Value is not numeric"),
+            _ => panic!("Error. Value is not numeric"),
         }
     }
 }
@@ -26,7 +27,7 @@ impl From<Value> for () {
     fn from(value: Value) -> () {
         match value {
             Value::VAL_NIL(nil_val) => nil_val,
-            _ => println!("Error. Value is not nill"),
+            _ => panic!("Error. Value is not nill"),
         }
     }
 }
@@ -52,7 +53,8 @@ impl From<()> for Value {
 impl Value {
     pub fn print_value(&self) {
         match *self {
-            Value::Number(val) => println!("'{}'", val),
+            Value::VAL_NUMBER(val) => println!("'{}'", val),
+            _ => panic!("Value not recognised, cannot print"),
         }
     }
 }
