@@ -13,33 +13,28 @@ fn main() {
     let mut chunk: Chunk = Chunk::new();
     let mut vm: VM = VM::new();
 
-    let mut constant: usize = chunk.add_constant(Value::VAL_NUMBER(1.2));
-    chunk.write(OpCode::OP_CONSTANT as u8, 123);
+    let mut constant: usize = chunk.add_constant(Value::ValNumber(1.2));
+    chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 
-    constant = chunk.add_constant(Value::VAL_NUMBER(3.4));
-    chunk.write(OpCode::OP_CONSTANT as u8, 123);
+    constant = chunk.add_constant(Value::ValNumber(3.4));
+    chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 
-    chunk.write(OpCode::OP_ADD as u8, 123);
+    chunk.write(OpCode::OpAdd as u8, 123);
 
-    constant = chunk.add_constant(Value::VAL_NUMBER(5.6));
-    chunk.write(OpCode::OP_CONSTANT as u8, 123);
+    constant = chunk.add_constant(Value::ValNumber(5.6));
+    chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 
-    chunk.write(OpCode::OP_DIVIDE as u8, 123);
+    chunk.write(OpCode::OpDivide as u8, 123);
 
-    chunk.write(OpCode::OP_NEGATE as u8, 123);
+    chunk.write(OpCode::OpNegate as u8, 123);
 
-    chunk.write(OpCode::OP_RETURN as u8, 123);
+    chunk.write(OpCode::OpReturn as u8, 123);
 
     debug::disassemble_chunk(&chunk, "test_chunk");
 
     vm.interpret(&chunk);
-
-    
-   
-
-  
 
 }

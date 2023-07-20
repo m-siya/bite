@@ -91,7 +91,7 @@ impl VM {
             let instruction: OpCode = self.read_byte(chunk);
 
             match instruction {
-                OpCode::OP_RETURN => {
+                OpCode::OpReturn => {
                     print!("Final value on stack when program returns: ");
                     (self.pop()).print_value();
                     println!();
@@ -99,18 +99,18 @@ impl VM {
                     return InterpretResult::Ok;
                 }
 
-                OpCode::OP_CONSTANT => {
+                OpCode::OpConstant => {
                     let constant = self.read_constant(chunk);
                     self.push(constant);
                     //println!("{}", constant);  
                 }
     
                 //before case OP_RETURN
-                OpCode::OP_ADD => BINARY_OP!(+),
-                OpCode::OP_SUBTRACT => BINARY_OP!(-),
-                OpCode::OP_MULTIPLY => BINARY_OP!(*),
-                OpCode::OP_DIVIDE => BINARY_OP!(/),
-                OpCode::OP_NEGATE => {
+                OpCode::OpAdd => BINARY_OP!(+),
+                OpCode::OpSubtract => BINARY_OP!(-),
+                OpCode::OpMultiply => BINARY_OP!(*),
+                OpCode::OpDivide => BINARY_OP!(/),
+                OpCode::OpNegate => {
                     let value = self.pop();
                     self.push(-value)
                 }
