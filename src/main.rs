@@ -11,10 +11,10 @@ use vm::InterpretResult;
 
 fn main() {
     println!("Hello, bite!");
-    let mut chunk = Chunk::new();
-    let mut vm = VM::new();
+    let mut chunk: Chunk = Chunk::new();
+    let mut vm: VM = VM::new();
 
-    let constant = chunk.add_constant(Value::VAL_NUMBER(1.2));
+    let mut constant = chunk.add_constant(Value::VAL_NUMBER(1.2));
     chunk.write(OpCode::OP_CONSTANT as u8, 123);
     chunk.write(constant as u8, 123);
 

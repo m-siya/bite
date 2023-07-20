@@ -1,4 +1,7 @@
+use std::ops::Neg;
+
 #[allow(non_camel_case_types)]
+#[derive(Copy, Clone)]
 pub enum Value {
     VAL_BOOL(bool),
     VAL_NIL(()),
@@ -50,6 +53,17 @@ impl From<()> for Value {
     }
 }
 
+impl Neg for Value {
+    type Output = Value;
+
+    fn neg(self) -> Value {
+        match self {
+            Value::VAL_NUMBER(num) => Value::VAL_NUMBER(-num),
+            _ => panic!("Error. Negating a non numeric value is not possible"),
+        }
+    }
+}
+
 impl Value {
     pub fn print_value(&self) {
         match *self {
@@ -57,6 +71,8 @@ impl Value {
             _ => panic!("Value not recognised, cannot print"),
         }
     }
+
+   // pub fn read_value(&self, which: usize)
 }
 
 

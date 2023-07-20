@@ -5,34 +5,41 @@ use chunk::Chunk;
 use chunk::OpCode;
 use value::Value;
 //use debug::*;
+pub enum InterpretResult {
+    Ok,
+    CompileError,
+    RuntimeError,
+}
 
 pub struct VM {
-    chunk: Chunk,
-    ip: u8,
+    //chunk: Chunk,
+    ip: usize, //indexes into the next instruction in the chunk
     stack: Vec<Value>,
     stack_top: usize, // points to where next Value will go
 }
 
-#[allow(non_camel_case_types)]
-pub enum InterpretResult {
-    INTERPRET_OK,
-    INTERPRET_COMPILE_ERROR,
-    INTERPRET_RUNTIME_ERROR,
-}
-
-
 impl VM {
     pub fn new() -> VM {
-        VM {chunk: Chunk::new(), ip: 0, stack: Vec::new(), stack_top: 0}
+        VM {ip: 0, stack: Vec::new(), stack_top: 0}
     }
 
-    fn read_byte(&mut self) -> u8{
+    pub fn reset_stack(&mut self) {
+        self.stack = Vec::new();
+    }
+
+    //returns the next instruction to which ip points to
+    fn read_byte(&mut self, chunk: &Chunk) -> OpCode{
+        let instruction: OpCode = chunk.code[self.ip].into();
         self.ip += 1;
-        self.ip
+        instruction
+        
     }
 
-    fn read_constant(&mut self) -> &Value {
-        &self.chunk.constants[self.read_byte() as usize]
+    fn read_constant(&mut self, chunk: &Chunk) -> Value {
+        let index: usize = chunk.code[self.ip] as usize;
+        self.ip += 1;
+       // chunk.constants[index]
+       chunk.get_constant(index)
     }
 
     pub fn push(&mut self, value: Value) {
@@ -51,13 +58,11 @@ impl VM {
     }
 
     pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
-        self.chunk = *chunk;
         self.ip = 0;
-        
-        self.run()
+        self.run(chunk)
     }
 
-    fn run(&self) -> InterpretResult {
+    fn run(&mut self, chunk: &Chunk) -> InterpretResult {
         macro_rules! BINARY_OP {
             ($op:tt) => {
                 {
@@ -74,28 +79,28 @@ impl VM {
             print!("          ");
             for slot in self.stack.iter() {
                 print!("[ ");
-                (*slot).print_value();
+                (slot).print_value();
                 print!(" ]");
             }
             println!();
 
-            debug::disassemble_instruction(&self.chunk, self.ip);
+            debug::disassemble_instruction(chunk, self.ip as u8);
             
             // debug code ends  
 
-            let instruction: OpCode = self.read_byte().into();
+            let instruction: OpCode = self.read_byte(chunk);
 
             match instruction {
                 OpCode::OP_RETURN => {
                     (self.pop()).print_value();
                     println!();
 
-                    return InterpretResult::INTERPRET_OK;
+                    return InterpretResult::Ok;
                 }
 
                 OpCode::OP_CONSTANT => {
-                    let constant: &Value = self.read_constant();
-                    self.push(*constant);
+                    let constant = self.read_constant(chunk);
+                    self.push(constant);
                     //println!("{}", constant);  
                 }
     
@@ -104,7 +109,10 @@ impl VM {
                 OpCode::OP_SUBTRACT => BINARY_OP!(-),
                 OpCode::OP_MULTIPLY => BINARY_OP!(*),
                 OpCode::OP_DIVIDE => BINARY_OP!(/),
-                OpCode::OP_NEGATE => self.push(Value::from(-f64::from(self.pop()))),   
+                OpCode::OP_NEGATE => {
+                    let value = self.pop();
+                    self.push(-value)
+                }
             }
         }        
     }
