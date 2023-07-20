@@ -7,8 +7,8 @@ use value::Value;
 //use debug::*;
 pub enum InterpretResult {
     Ok,
-    CompileError,
-    RuntimeError,
+    //CompileError,
+   // RuntimeError,
 }
 
 pub struct VM {
@@ -23,9 +23,9 @@ impl VM {
         VM {ip: 0, stack: Vec::new(), stack_top: 0}
     }
 
-    pub fn reset_stack(&mut self) {
-        self.stack = Vec::new();
-    }
+    // pub fn reset_stack(&mut self) {
+    //     self.stack = Vec::new();
+    // }
 
     //returns the next instruction to which ip points to
     fn read_byte(&mut self, chunk: &Chunk) -> OpCode{

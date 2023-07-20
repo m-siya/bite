@@ -7,7 +7,6 @@ use chunk::OpCode;
 use chunk::Chunk;
 use value::Value;
 use vm::VM;
-use vm::InterpretResult;
 
 fn main() {
     println!("Hello, bite!");
@@ -36,7 +35,7 @@ fn main() {
 
     debug::disassemble_chunk(&chunk, "test_chunk");
 
-    let result: vm::InterpretResult = vm.interpret(&chunk);
+    vm.interpret(&chunk);
 
     
    
