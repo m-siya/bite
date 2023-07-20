@@ -67,7 +67,7 @@ impl Neg for Value {
 impl Value {
     pub fn print_value(&self) {
         match *self {
-            Value::VAL_NUMBER(val) => println!("'{}'", val),
+            Value::VAL_NUMBER(val) => print!("'{}'", val),
             _ => panic!("Value not recognised, cannot print"),
         }
     }

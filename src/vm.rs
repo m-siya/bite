@@ -92,6 +92,7 @@ impl VM {
 
             match instruction {
                 OpCode::OP_RETURN => {
+                    print!("Final value on stack when program returns: ");
                     (self.pop()).print_value();
                     println!();
 
