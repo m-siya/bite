@@ -1,15 +1,15 @@
 use value::Value;
 
-#[allow(non_camel_case_types)]
+#[derive(Clone, Copy)]
 pub enum OpCode {
    
-    OP_CONSTANT,
-    OP_ADD,
-    OP_SUBTRACT,
-    OP_MULTIPLY,
-    OP_DIVIDE,
-    OP_NEGATE,
-    OP_RETURN,
+    OpConstant,
+    OpAdd,
+    OpSubtract,
+    OpMultiply,
+    OpDivide,
+    OpNegate,
+    OpReturn,
 
 
 }
@@ -23,19 +23,20 @@ impl From<OpCode> for u8 {
 impl From<u8> for OpCode {
     fn from(index: u8) -> OpCode {
         match index {
-            0 => OpCode::OP_CONSTANT,
-            1 => OpCode::OP_ADD,
-            2 => OpCode::OP_SUBTRACT,
-            3 => OpCode::OP_MULTIPLY,
-            4 => OpCode::OP_DIVIDE,
-            5 => OpCode::OP_NEGATE,
-            6 => OpCode::OP_RETURN,
-            _ => !unimplemented!(),
+            0 => OpCode::OpConstant,
+            1 => OpCode::OpAdd,
+            2 => OpCode::OpSubtract,
+            3 => OpCode::OpMultiply,
+            4 => OpCode::OpDivide,
+            5 => OpCode::OpNegate,
+            6 => OpCode::OpReturn,
+            _ => panic!("Error. Invalid OpCode code")
         }
     }
 }
 
-// acces the chunk's capacity and count using vector's .capacity() and .len()
+// access the chunk's capacity and count using vector's .capacity() and .len()
+//#[derive(Clone)]
 pub struct Chunk {
     pub code: Vec<u8>,
     pub constants: Vec<Value>,
@@ -56,6 +57,11 @@ impl Chunk {
         self.constants.push(value);
         self.constants.len() - 1
     }
+
+    pub fn get_constant(&self, index: usize) -> Value {
+        self.constants[index]
+    }
+
 }
 
 

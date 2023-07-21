@@ -8,7 +8,7 @@ use value::Value;
 pub enum InterpretResult {
     Ok,
     //CompileError,
-   // RuntimeError,
+    RuntimeError,
 }
 
 pub struct VM {
@@ -55,6 +55,10 @@ impl VM {
             Some(value) => return value,
             None => panic!("VM stack is empty"),
         }
+    }
+
+    fn peek(&self, depth: usize) -> &Value {
+        &self.stack[self.stack.len() - depth - 1]
     }
 
     pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
@@ -111,8 +115,18 @@ impl VM {
                 OpCode::OpMultiply => BINARY_OP!(*),
                 OpCode::OpDivide => BINARY_OP!(/),
                 OpCode::OpNegate => {
-                    let value = self.pop();
-                    self.push(-value)
+                    let value = self.peek(0);
+                    match value {
+                        Value::ValNumber(_) => {
+                            let top_val = self.pop();
+                            self.push(-value)
+                        }
+
+                        _ => {
+                            run_time_error("Operand must be a number");
+                            return InterpretResult::RuntimeError;
+                        }
+                    }
                 }
             }
         }        
