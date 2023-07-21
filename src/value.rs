@@ -1,4 +1,4 @@
-use std::ops::Neg;
+use std::ops::{Neg, Add, Sub, Mul, Div};
 
 #[derive(Copy, Clone)]
 pub enum Value {
@@ -62,6 +62,63 @@ impl Neg for Value {
         }
     }
 }
+
+impl Add for Value {
+    type Output = Value;
+
+    fn add(self, rhs: Value) -> Value {
+        match (self, rhs) {
+            (Value::ValNumber(a), Value::ValNumber(b)) => Value::ValNumber(a + b),
+            (Value::ValNumber(_), _) => panic!("Error. Invalid right argument"),
+            (_, Value::ValNumber(_)) => panic!("Error. Invalid left argument"),
+            (_, _) => panic!("Error. Invalid arguments for arithmetic addition"),
+        }
+    }
+}
+
+
+impl Sub for Value {
+    type Output = Value;
+
+    fn sub(self, rhs: Value) -> Value {
+        match (self, rhs) {
+            (Value::ValNumber(a), Value::ValNumber(b)) => Value::ValNumber(a - b),
+            (Value::ValNumber(_), _) => panic!("Error. Invalid right argument"),
+            (_, Value::ValNumber(_)) => panic!("Error. Invalid left argument"),
+            (_, _) => panic!("Error. Invalid arguments for arithmetic subtraction"),
+        }
+    }
+}
+
+
+impl Mul for Value {
+    type Output = Value;
+
+    fn mul(self, rhs: Value) -> Value {
+        match (self, rhs) {
+            (Value::ValNumber(a), Value::ValNumber(b)) => Value::ValNumber(a * b),
+            (Value::ValNumber(_), _) => panic!("Error. Invalid right argument"),
+            (_, Value::ValNumber(_)) => panic!("Error. Invalid left argument"),
+            (_, _) => panic!("Error. Invalid arguments for arithmetic multiplication"),
+        }
+    }
+}
+
+
+impl Div for Value {
+    type Output = Value;
+
+    fn div(self, rhs: Value) -> Value {
+        match (self, rhs) {
+            (Value::ValNumber(_), Value::ValNumber(0.0)) => panic!("Error. Cannot divide by zero"),
+            (Value::ValNumber(a), Value::ValNumber(b)) => Value::ValNumber(a / b),
+            (Value::ValNumber(_), _) => panic!("Error. Invalid right argument"),
+            (_, Value::ValNumber(_)) => panic!("Error. Invalid left argument"),
+            (_, _) => panic!("Error. Invalid arguments for arithmetic addition"),
+        }
+    }
+}
+
 
 impl Value {
     pub fn print_value(&self) {
