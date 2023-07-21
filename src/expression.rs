@@ -165,76 +165,7 @@ fn expression(&mut self) // After get_rule
 
  // Inside compiler.rs
 
- pub struct Compiler<'a>
- {
-    parser: Parser,
-    scanner: Scanner,
-    chunk: &'a mut Chunk,
-    rules: Vec<ParseRule>
- }
-
-impl<'a> Compiler<'a>
-{
-    pub fn new(chunk: &'a mut Chunk) -> Self
-    {
-        // lazy_static could be a better option for performance
-        let mut rules = vec!
-        [
-            ParseRule
-            {
-                prefix: None,
-                infix: None,
-                precedence: Precedence::None,
-            };
-            TokenType::NumberOfTokens as usize
-        ];
-        rules[TokenType::LeftParen as usize] = ParseRule
-        {
-            prefix: Some(|c| c.grouping()),
-            infix: None,
-            precedence: Precedence::None,
-        };
-        rules[TokenType::Minus as usize] = ParseRule
-        {
-            prefix: Some(|c| c.unary()),
-            infix: Some(|c| c.binary()),
-            precedence: Precedence::Term,
-        };
-        rules[TokenType::Plus as usize] = ParseRule
-        {
-            prefix: None,
-            infix: Some(|c| c.binary()),
-            precedence: Precedence::Term,
-        };
-        rules[TokenType::Slash as usize] = ParseRule
-        {
-            prefix: None,
-            infix: Some(|c| c.binary()),
-            precedence: Precedence::Factor,
-        };
-        rules[TokenType::Star as usize] = ParseRule
-        {
-            prefix: None,
-            infix: Some(|c| c.binary()),
-            precedence: Precedence::Factor,
-        };
-        rules[TokenType::Number as usize] = ParseRule
-        {
-            prefix: Some(|c| c.number()),
-            infix: None,
-            precedence: Precedence::None,
-        };
-
-        Self
-        {
-            parser: Parser::default(),
-            scanner: Scanner::new(&"".to_string()),
-            chunk,
-            rules,
-        }
-    }
-
-    pub fn compile(&mut self, source: &str) -> Result<(), InterpretResult>
+    pub fn compile(&mut self, source: &str) -> Result<(), InterpretResult> // Inside impl compile
     {
         self.scanner = Scanner::new(source);
         self.advance();
@@ -254,7 +185,6 @@ impl<'a> Compiler<'a>
             Ok(())
         }
     }
-}
 
  // Inside token.rs
 

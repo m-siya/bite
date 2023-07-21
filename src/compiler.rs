@@ -11,9 +11,65 @@ pub struct Parser {
     panic_mode: bool,
 }
 
-pub struct Compiler;
+// pub struct Compiler;
 
-impl Compiler {
+pub struct Compiler<'a> {
+    parser: Parser,
+    scanner: Scanner,
+    chunk: &'a mut Chunk,
+    rules: Vec<ParseRule>
+ }
+
+ impl<'a> Compiler<'a> {
+    pub fn new(chunk: &'a mut Chunk) -> Self {
+        // lazy_static could be a better option for performance
+        let mut rules = vec! [
+            ParseRule {
+                prefix: None,
+                infix: None,
+                precedence: Precedence::None,
+            };
+            TokenType::NumberOfTokens as usize
+        ];
+        rules[TokenType::LeftParen as usize] = ParseRule {
+            prefix: Some(|c| c.grouping()),
+            infix: None,
+            precedence: Precedence::None,
+        };
+        rules[TokenType::Minus as usize] = ParseRule {
+            prefix: Some(|c| c.unary()),
+            infix: Some(|c| c.binary()),
+            precedence: Precedence::Term,
+        };
+        rules[TokenType::Plus as usize] = ParseRule {
+            prefix: None,
+            infix: Some(|c| c.binary()),
+            precedence: Precedence::Term,
+        };
+        rules[TokenType::Slash as usize] = ParseRule {
+            prefix: None,
+            infix: Some(|c| c.binary()),
+            precedence: Precedence::Factor,
+        };
+        rules[TokenType::Star as usize] = ParseRule {
+            prefix: None,
+            infix: Some(|c| c.binary()),
+            precedence: Precedence::Factor,
+        };
+        rules[TokenType::Number as usize] = ParseRule {
+            prefix: Some(|c| c.number()),
+            infix: None,
+            precedence: Precedence::None,
+        };
+
+        Self {
+            parser: Parser::default(),
+            scanner: Scanner::new(&"".to_string()),
+            chunk,
+            rules,
+        }
+    }
+
     //return false if error occurred
     //look into Result for this
     fn compile(&mut self, source: &str, chunk: Chunk) {
@@ -31,7 +87,7 @@ impl Compiler {
 
         !parser.had_error
     }
-    
+
 }
 
 fn advance() {
