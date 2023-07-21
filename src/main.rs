@@ -13,17 +13,17 @@ fn main() {
     let mut chunk: Chunk = Chunk::new();
     let mut vm: VM = VM::new();
 
-    let mut constant: usize = chunk.add_constant(Value::ValNumber(1.2));
+    let mut constant: usize = chunk.add_constant(Value::ValNumber(4.0));
     chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 
-    constant = chunk.add_constant(Value::ValNumber(3.4));
+    constant = chunk.add_constant(Value::ValNumber(6.0));
     chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 
     chunk.write(OpCode::OpAdd as u8, 123);
 
-    constant = chunk.add_constant(Value::ValNumber(5.6));
+    constant = chunk.add_constant(Value::ValNumber(5.0));
     chunk.write(OpCode::OpConstant as u8, 123);
     chunk.write(constant as u8, 123);
 

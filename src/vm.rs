@@ -1,5 +1,6 @@
-//use crate::value;
 use crate::debug;
+use crate::chunk;
+use crate::value;
 
 use chunk::Chunk;
 use chunk::OpCode;
@@ -57,9 +58,10 @@ impl VM {
         }
     }
 
-    fn peek(&self, depth: usize) -> &Value {
-        &self.stack[self.stack.len() - depth - 1]
+    fn peek(&self, depth: usize) -> Value {
+        self.stack[self.stack.len() - depth - 1]
     }
+ 
 
     pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
         self.ip = 0;
@@ -119,11 +121,11 @@ impl VM {
                     match value {
                         Value::ValNumber(_) => {
                             let top_val = self.pop();
-                            self.push(-value)
+                            self.push(-top_val)
                         }
 
                         _ => {
-                            run_time_error("Operand must be a number");
+                           // run_time_error("Operand must be a number");
                             return InterpretResult::RuntimeError;
                         }
                     }
@@ -131,9 +133,6 @@ impl VM {
             }
         }        
     }
-
-
-
 }
 
 
