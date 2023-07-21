@@ -67,11 +67,11 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn is_alpha(c: char) -> bool {
+    fn is_alpha(&self, c: char) -> bool {
         c.is_ascii_alphabetic() || c == '_'
     }
 
-    fn is_digit(c: char) -> bool {
+    fn is_digit(&self, c: char) -> bool {
         c.is_ascii_digit()
     }
 
@@ -155,14 +155,14 @@ impl<'a> Scanner<'a> {
     }
 
     fn identifier(&mut self) -> Token {
-        while Scanner::is_alpha(self.peek()) || Scanner::is_digit(self.peek()) {
+        while self.is_alpha(self.peek()) || self.is_digit(self.peek()) {
             self.advance();
     }
         self.make_token(self.identifier_type())
     }
 
     fn number(&mut self) -> Token {
-        while Scanner::is_digit(self.peek()) {
+        while self.is_digit(self.peek()) {
             self.advance();
     }
 
@@ -246,9 +246,9 @@ impl<'a> Scanner<'a> {
         }
 
         let c = self.advance();
-        if Scanner::is_alpha(c) {
+        if self.is_alpha(c) {
             return self.identifier();
-        } else if Scanner::is_digit(c) {
+        } else if self.is_digit(c) {
             return self.number();
         }
 
