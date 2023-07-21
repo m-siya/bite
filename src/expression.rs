@@ -163,31 +163,6 @@ fn expression(&mut self) // After get_rule
     self.parse_precedence(Precedence::Assignment);
 }
 
-// Inside vm.rs
-
-pub fn interpret(&mut self, source: &str) -> Result<(), InterpretResult>
-{
-    let mut chunk = Chunk::new();
-    let mut compiler = Compiler::new(&mut chunk);
-    compiler.compile(source)?;
-
-    self.ip = 0;
-    self.run(&chunk)
-}
-
-// Inside scanner.rs
-
-pub fn new(source: &str) -> Self // Inside impl Scanner
-{
-    Self
-    {
-        source: source.chars().collect::<Vec<char>>(),
-        start: 0,
-        current: 0,
-        line: 1,
-    }
-}
-
  // Inside compiler.rs
 
  pub struct Compiler<'a>

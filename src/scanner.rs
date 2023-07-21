@@ -59,10 +59,12 @@ struct Scanner<'a> {
 }
 
 impl<'a> Scanner<'a> {
-    pub fn new(source: &'a str) -> Self {
-        Scanner {
-            start: source,
-            current: source,
+
+    pub fn new(source: &str) -> Self {
+        Self {
+            source: source.chars().collect::<Vec<char>>(),
+            start: 0,
+            current: 0,
             line: 1,
         }
     }
