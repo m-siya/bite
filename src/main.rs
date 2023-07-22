@@ -3,6 +3,8 @@ mod debug;
 mod value;
 mod vm;
 mod compiler;
+mod scanner;
+mod expression;
 
 use chunk::OpCode;
 use chunk::Chunk;

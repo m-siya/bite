@@ -27,7 +27,7 @@ fn emit_constant(&mut self, value: Value) // After make_constant
 }
 
 #[derive(Copy, Clone)]
-struct ParseRule // After pub struct parser
+pub struct ParseRule // After pub struct parser
 {
     prefix: Option<fn(&mut Compiler)>,
     infix: Option<fn(&mut Compiler)>,
@@ -35,7 +35,7 @@ struct ParseRule // After pub struct parser
 }
 
 #[derive(PartialEq, PartialOrd, Copy, Clone)] // After ParseRule
-enum Precedence 
+pub enum Precedence 
 {
     None = 0,
     Assignment, // =

@@ -1,9 +1,10 @@
-//TO DO, ONLY BASIC ROUGH TRANSLATION RIGHT NOW
-use chunk::OpCode;
-use chunk::Chunk;
-use scanner::Token;
-use scanner::TokenType;
+use crate::{chunk, scanner, expression};
+use chunk::{Chunk, OpCode};
+use scanner::{Token, TokenType, Scanner};
+use expression::{ParseRule, Precedence};
 
+
+#[derive(Default)]
 pub struct Parser {
     current: Token,
     previous: Token,
@@ -11,16 +12,20 @@ pub struct Parser {
     panic_mode: bool,
 }
 
-// pub struct Compiler;
+impl Parser {
+    pub fn new() -> Parser {
+        Parser{current: Token::default(), previous: Token::default(), had_error: false, panic_mode: false}
+    }
+}
 
 pub struct Compiler<'a> {
     parser: Parser,
-    scanner: Scanner,
+    scanner: Scanner<'a>,
     chunk: &'a mut Chunk,
     rules: Vec<ParseRule>
  }
 
- impl<'a> Compiler<'a> {
+impl<'a> Compiler<'a> {
     pub fn new(chunk: &'a mut Chunk) -> Self {
         // lazy_static could be a better option for performance
         let mut rules = vec! [
@@ -70,47 +75,75 @@ pub struct Compiler<'a> {
         }
     }
 
+    fn advance(&mut self) {
+        self.parser.previous = self.parser.current;
+        
+        loop {
+            self.parser.current = self.scanner.scan_token();
+
+            if self.parser.current.token_type != TokenType::Error {
+                break;
+            }
+    
+            self.error_at_current(&self.parser.current.start);
+        }
+    }
+
+    fn error_at_current(&self, message: &str) {
+        self.error_at(self.parser.current, message);
+    }
+    
+    fn error(&self, message: &str) {
+        self.error_at(self.parser.previous, message);
+    }
+    
+    fn error_at(&self, token: Token, message: &str) {
+        if self.parser.panic_mode {
+            return;
+        }
+        self.parser.panic_mode = true;
+        eprint!("[line {}] Error", token.line);
+    
+        match token.token_type {
+            TokenType::Eof => eprint!(" at the end"),
+            TokenType::Error => !unimplemented!(),
+            _ => eprint!(" at {} {}", token.length, token.start),
+        }
+    
+        println!(": {}", message);
+        self.parser.had_error = true;
+    }
+    
+    
+    fn consume(&mut self, type: TokenType, message: &str) {
+        if parser.current.type == type {
+            advance();
+            return;
+        }
+    
+        error_at_current(message);
+    }
+
     //return false if error occurred
-    //look into Result for this
-    fn compile(&mut self, source: &str, chunk: Chunk) {
-        init_scanner(source);
+    pub fn compile(&mut self, source: &str, chunk: Chunk) -> bool{
+        //init_scanner(source);
+        self.scanner = Scanner::new();
 
-        compiling_chunk = chunk;
+        let compiling_chunk: Chunk = chunk;
 
-        parser.had_error = false;
-        parser.panic_mode = false;
+        self.parser.had_error = false;
+        self.parser.panic_mode = false;
 
-        advance();
+        self.advance();
         expression();
-        consume(TOKEN_EOF, "Expect end of Expression")
+        self.consume(TOKEN_EOF, "Expect end of Expression");
         end_compiler();
 
-        !parser.had_error
+        !self.parser.had_error
     }
 
 }
 
-fn advance() {
-    parser.previous = parser.current;
-    
-    while true {
-        parser.current = scan_token();
-        if parser.current.type != TOKEN_ERROR {
-            break;
-        }
-
-        error_at_current(parser.current.start);
-    }
-}
-
-fn consume(type: TokenType, message: &str) {
-    if parser.current.type == type {
-        advance();
-        return;
-    }
-
-    error_at_current(message);
-}
 
 // translate to bytecode
 fn emit_byte(chunk: &Chunk, byte: u8) {
@@ -130,27 +163,3 @@ fn end_compiler() {
     emit_return();
 }
 
-fn error_at_current(message: &str) {
-    error_at(parser.current, message);
-}
-
-fn error(message: &str) {
-    error_at(parser.previous, message);
-}
-
-fn error_at(token: Token, message: &str) {
-    if parser.panic_mode {
-        return;
-    }
-    parser.panic_mode = true;
-    println!("[line {}] Error", token.line);
-
-    match token.type {
-        TokenType::TOKEN_EOF => println!(),
-        TokenTyep::TOKEN_ERROR => !unimplemented!(),
-        _ => println!(" at {} {}", token.length, token.start),
-    }
-
-    println!(": {}", message);
-    parser.had_error = true;
-}

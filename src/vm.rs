@@ -81,22 +81,16 @@ impl VM {
     pub fn interpret(&mut self, source: &str) -> InterpretResult {
         let mut chunk: Chunk = Chunk::new();
         let mut compiler = Compiler::new(&mut chunk);
-        compiler.compile(source)?;
+        
+        if !compiler.compile(source) {
+            return InterpretResult::CompileError;
+        }
 
-        // self.ip = 0;
-        // self.run(&chunk)
-        //self.compile(source);
-        InterpretResult::Ok
+        self.ip = 0;
+        let result: InterpretResult = self.run(&chunk);
+        result
+        
     }
-
-    // pub fn interpret(&mut self, source: &Chunk) -> InterpretResult {  
-    //     self.ip = 0;
-    //     self.run(source)
-    // }
-
-
-
-    
 
     fn run(&mut self, chunk: &Chunk) -> InterpretResult {
         macro_rules! BINARY_OP {

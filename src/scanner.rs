@@ -1,3 +1,4 @@
+#[derive(PartialEq)]
 pub enum TokenType {
     // Single-character tokens.
     LeftParen,
@@ -45,6 +46,8 @@ pub enum TokenType {
     Eof,
 }
 
+#[derive(PartialEq)]
+//#[derive(Copy, Clone)]
 pub struct Token {
     pub token_type: TokenType,
     pub start: String,
@@ -52,7 +55,13 @@ pub struct Token {
     pub line: i32,
 }
 
-struct Scanner<'a> {
+impl Default for Token {
+    fn default() -> Token {
+        Token {token_type: TokenType::Nil, start: String::new(), length: 0, line: -1}
+    }
+}
+
+pub struct Scanner<'a> {
     start: &'a str,
     current: &'a str,
     line: i32,
@@ -62,7 +71,7 @@ impl<'a> Scanner<'a> {
 
     pub fn new(source: &str) -> Self {
         Self {
-            source: source.chars().collect::<Vec<char>>(),
+            //source: source.chars().collect::<Vec<char>>(),
             start: 0,
             current: 0,
             line: 1,
@@ -239,7 +248,7 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn scan_token(&mut self) -> Token {
+    pub fn scan_token(&mut self) -> Token {
         self.skip_whitespace();
         self.start = self.current;
 
@@ -301,8 +310,7 @@ impl<'a> Scanner<'a> {
 }
 
 pub fn init_scanner(source: &str) {
-    let scanner = Scanner::new(source);
-   
+    let scanner = Scanner::new(source); 
 }
 
 // ... Implement the remaining functions and logic ...
