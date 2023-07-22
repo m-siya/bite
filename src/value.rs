@@ -121,6 +121,21 @@ impl Div for Value {
 
 
 impl Value {
+    pub fn is_number(&self) -> bool {
+        match self {
+            Value::ValNumber(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_bool(&self) -> bool {
+        match self {
+            Value::ValBool(_) => true,
+            _ => false,
+        }
+    }
+
+
     pub fn print_value(&self) {
         match *self {
             Value::ValNumber(val) => print!("'{}'", val),

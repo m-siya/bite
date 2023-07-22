@@ -11,8 +11,9 @@ pub enum OpCode {
     OpDivide,
     OpNegate,
     OpReturn,
-
-
+    OpNil,
+    OpTrue,
+    OpFalse,
 }
 
 impl From<OpCode> for u8 {
@@ -31,6 +32,9 @@ impl From<u8> for OpCode {
             4 => OpCode::OpDivide,
             5 => OpCode::OpNegate,
             6 => OpCode::OpReturn,
+            7 => OpCode::OpNil,
+            8 => OpCode::OpTrue,
+            9 => OpCode::OpFalse,
             _ => panic!("Error. Invalid OpCode code")
         }
     }
