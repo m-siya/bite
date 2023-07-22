@@ -12,6 +12,18 @@ pub enum InterpretResult {
     RuntimeError,
 }
 
+//to produce formated runtime error messages
+// takes string and a variable number of arguments.
+macro_rules! run_time_error {
+    ($chunk: expr, $ip: expr, $format: expr $(, $($arg:expr), *)?) => {
+        {
+            eprintln!($format $(, $($arg), *)?);
+            let line = $chunk.lines[$ip - 1];
+            eprintln!("[line {}] in script", line);
+        }
+    };
+}
+
 pub struct VM {
     //chunk: Chunk,
     ip: usize, //indexes into the next instruction in the chunk
@@ -68,13 +80,27 @@ impl VM {
         self.run(chunk)
     }
 
+
+    
+
     fn run(&mut self, chunk: &Chunk) -> InterpretResult {
         macro_rules! BINARY_OP {
             ($op:tt) => {
                 {
-                    let right_operand: f64 = self.pop().into();
-                    let left_operand: f64 = self.pop().into();
-                    self.push(Value::from(left_operand $op right_operand));
+                    let op_r = self.peek(0);
+                    let op_l = self.peek(1);
+                    
+                    match (op_r, op_l) {
+                        (Value::ValNumber(_), Value::ValNumber(_)) => {
+                            let right_operand: Value= self.pop();
+                            let left_operand: Value = self.pop();
+                            self.push(Value::from(left_operand $op right_operand));
+                        }
+                        (_, _) => {
+                            run_time_error!(chunk, self.ip, "Error: {}", "Operands must be numbers");
+                            return InterpretResult::RuntimeError;
+                        }
+                    }
                 }
             }
         }
@@ -119,13 +145,13 @@ impl VM {
                 OpCode::OpNegate => {
                     let value = self.peek(0);
                     match value {
-                        Value::ValNumber(_) => {
+                        Value::ValBool(_) => {
                             let top_val = self.pop();
                             self.push(-top_val)
                         }
 
                         _ => {
-                           // run_time_error("Operand must be a number");
+                            run_time_error!(&chunk, self.ip, "Error: {}", "Operand must be a number");
                             return InterpretResult::RuntimeError;
                         }
                     }
