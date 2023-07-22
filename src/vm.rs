@@ -1,14 +1,18 @@
 use crate::debug;
 use crate::chunk;
 use crate::value;
+use crate::compiler;
 
 use chunk::Chunk;
 use chunk::OpCode;
 use value::Value;
+use compiler::Compiler;
+
+
 //use debug::*;
 pub enum InterpretResult {
     Ok,
-    //CompileError,
+    CompileError,
     RuntimeError,
 }
 
@@ -74,20 +78,22 @@ impl VM {
         self.stack[self.stack.len() - depth - 1]
     }
  
-    pub fn interpret(&mut self, source: &str) -> Result<(), InterpretResult> {
-    let mut chunk = Chunk::new();
-    let mut compiler = Compiler::new(&mut chunk);
-    compiler.compile(source)?;
+    pub fn interpret(&mut self, source: &str) -> InterpretResult {
+        let mut chunk: Chunk = Chunk::new();
+        let mut compiler = Compiler::new(&mut chunk);
+        compiler.compile(source)?;
 
-    self.ip = 0;
-    self.run(&chunk)
+        // self.ip = 0;
+        // self.run(&chunk)
+        //self.compile(source);
+        InterpretResult::Ok
     }
 
-/*    pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
-        self.ip = 0;
-        self.run(chunk)
-    }
-*/
+    // pub fn interpret(&mut self, source: &Chunk) -> InterpretResult {  
+    //     self.ip = 0;
+    //     self.run(source)
+    // }
+
 
 
     
