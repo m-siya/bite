@@ -72,8 +72,8 @@ impl<'a> Scanner<'a> {
     pub fn new(source: &str) -> Self {
         Self {
             //source: source.chars().collect::<Vec<char>>(),
-            start: 0,
-            current: 0,
+            start: source,
+            current: source,
             line: 1,
         }
     }

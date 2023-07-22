@@ -114,20 +114,41 @@ impl<'a> Compiler<'a> {
         self.parser.had_error = true;
     }
     
-    
-    fn consume(&mut self, type: TokenType, message: &str) {
-        if parser.current.type == type {
-            advance();
-            return;
+    fn consume(&mut self, token_type: TokenType, message: &str) {
+        match self.parser.current.token_type {
+            token_type => {
+                self.advance();
+            }
+            _ => {
+                self.error_at_current(message);
+            }
         }
-    
-        error_at_current(message);
     }
 
+    fn emit_byte(&mut self, byte: u8) {
+        self.chunk.write(byte, self.parser.previous.line);
+    }
+    
+    fn emit_bytes(&mut self, byte1: u8, byte2: u8) {
+        self.emit_byte(byte1);
+        self.emit_byte(byte2);
+    }
+    
+    fn emit_return(&self) {
+        self.emit_byte(OpCode::OpReturn.into());
+    }
+    
+    fn end_compiler(&self) {
+        self.emit_return();
+    }
+
+    fn expression(&mut self) {
+    }
+    
     //return false if error occurred
     pub fn compile(&mut self, source: &str, chunk: Chunk) -> bool{
         //init_scanner(source);
-        self.scanner = Scanner::new();
+        self.scanner = Scanner::new(source);
 
         let compiling_chunk: Chunk = chunk;
 
@@ -135,9 +156,9 @@ impl<'a> Compiler<'a> {
         self.parser.panic_mode = false;
 
         self.advance();
-        expression();
-        self.consume(TOKEN_EOF, "Expect end of Expression");
-        end_compiler();
+        self.expression();
+        self.consume(TokenType::Eof, "Expect end of Expression");
+        self.end_compiler();
 
         !self.parser.had_error
     }
@@ -146,20 +167,3 @@ impl<'a> Compiler<'a> {
 
 
 // translate to bytecode
-fn emit_byte(chunk: &Chunk, byte: u8) {
-    chunk.write(byte, parser.previous.line);
-}
-
-fn emit_bytes(byte1: u8, byte2: u8) {
-    emit_byte(byte1);
-    emit_byte(byte2);
-}
-
-fn emit_return() {
-    emit_byte(OpCode::OP_RETURN);
-}
-
-fn end_compiler() {
-    emit_return();
-}
-
