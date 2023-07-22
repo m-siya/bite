@@ -74,11 +74,20 @@ impl VM {
         self.stack[self.stack.len() - depth - 1]
     }
  
+    pub fn interpret(&mut self, source: &str) -> Result<(), InterpretResult> {
+    let mut chunk = Chunk::new();
+    let mut compiler = Compiler::new(&mut chunk);
+    compiler.compile(source)?;
 
-    pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
+    self.ip = 0;
+    self.run(&chunk)
+    }
+
+/*    pub fn interpret(&mut self, chunk: &Chunk) -> InterpretResult {  
         self.ip = 0;
         self.run(chunk)
     }
+*/
 
 
     
