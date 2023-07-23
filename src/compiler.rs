@@ -126,6 +126,21 @@ impl<'a> Compiler<'a> {
             infix: None,
             precedence: Precedence::None,
         };
+        rules[TokenType::False as usize] = ParseRule {
+            prefix: Some(|c| c.literal()),
+            infix: None,
+            precedence: Precedence::None,
+        };
+        rules[TokenType::False as usize] = ParseRule {
+            prefix: Some(|c| c.literal()),
+            infix: None,
+            precedence: Precedence::None,
+        };
+        rules[TokenType::Nil as usize] = ParseRule {
+            prefix: Some(|c| c.literal()),
+            infix: None,
+            precedence: Precedence::None,
+        };
 
         Self {
             parser: Parser::default(),
@@ -234,6 +249,15 @@ impl<'a> Compiler<'a> {
             TokenType::Star => self.emit_byte(OpCode::OpMultiply.into()),
             TokenType::Slash => self.emit_byte(OpCode::OpDivide.into()),
             _ => todo!(),
+        }
+    }
+
+    fn literal(&mut self) {
+        match self.parser.previous.token_type {
+            TokenType::False => self.emit_byte(OpCode::OpFalse.into()),
+            TokenType::Nil => self.emit_byte(OpCode::OpNil.into()),
+            TokenType::True => self.emit_byte(OpCode::OpTrue.into()),
+            _ => (),
         }
     }
 

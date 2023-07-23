@@ -159,6 +159,9 @@ impl VM {
                         }
                     }
                 }
+                OpCode::OpNil => self.push(Value::ValNil(())),
+                OpCode::OpTrue => self.push(Value::ValBool(true)),
+                OpCode::OpFalse => self.push(Value::ValBool(false)),
             }
         }        
     }

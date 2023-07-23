@@ -138,6 +138,8 @@ impl Value {
 
     pub fn print_value(&self) {
         match *self {
+            Value::ValBool(boolean) => print!("'{}'", boolean),
+            Value::ValNil(()) => print!("'nil'"),
             Value::ValNumber(val) => print!("'{}'", val),
             _ => panic!("Value not recognised, cannot print"),
         }
