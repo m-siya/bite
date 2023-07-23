@@ -1,4 +1,5 @@
-use crate::value;
+//use crate::value;
+use crate::value::*;
 use value::Value;
 
 #[derive(Clone, Copy)]
@@ -58,9 +59,11 @@ impl Chunk {
         self.lines.push(line);
     }
 
-    pub fn add_constant(&mut self, value: Value) -> usize{
-        self.constants.push(value);
-        self.constants.len() - 1
+    // add_constant returns u8 
+    pub fn add_constant(&mut self, value: Value) -> Option<u8> 
+    {
+        let idx = self.constants.write(value);
+        u8::try_from(idx).ok()
     }
 
     pub fn get_constant(&self, index: usize) -> Value {
