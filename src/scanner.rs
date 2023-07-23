@@ -1,7 +1,7 @@
-#[derive(PartialEq)]
-pub enum TokenType {
-    // Single-character tokens.
-    LeftParen,
+#[derive(Debug, PartialEq, Copy, Clone)]
+ pub enum TokenType
+ {
+    LeftParen = 0,
     RightParen,
     LeftBrace,
     RightBrace,
@@ -9,34 +9,30 @@ pub enum TokenType {
     Dot,
     Minus,
     Plus,
-    Semicolon,
+    SemiColon,
     Slash,
     Star,
-    // One or two character tokens.
     Bang,
     BangEqual,
-    Equal,
-    EqualEqual,
+    Assign, // ('=')
+    Equals, // ('==')
     Greater,
     GreaterEqual,
     Less,
     LessEqual,
-    // Literals.
     Identifier,
     String,
     Number,
-    // Keywords.
     And,
     Class,
     Else,
     False,
-    For,
     Fun,
+    For,
     If,
     Nil,
     Or,
-    Print,
-    Return,
+    Print, Return,
     Super,
     This,
     True,
@@ -44,7 +40,9 @@ pub enum TokenType {
     While,
     Error,
     Eof,
-}
+    Undefined,
+    NumberOfTokens,
+ }
 
 #[derive(PartialEq)]
 //#[derive(Copy, Clone)]
