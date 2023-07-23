@@ -1,15 +1,8 @@
 use crate::debug;
-use crate::chunk;
-use crate::value;
-use crate::compiler;
+use crate::chunk::{Chunk, OpCode};
+use crate::value::Value;
+use crate::compiler::Compiler;
 
-use chunk::Chunk;
-use chunk::OpCode;
-use value::Value;
-use compiler::Compiler;
-
-
-//use debug::*;
 pub enum InterpretResult {
     Ok,
     CompileError,

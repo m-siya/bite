@@ -1,6 +1,5 @@
 //use crate::value;
-use crate::value::*;
-use value::Value;
+use crate::value::Value;
 
 #[derive(Clone, Copy)]
 pub enum OpCode {

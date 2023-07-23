@@ -1,8 +1,7 @@
-use crate::{chunk, scanner, vm, value};
-use chunk::{Chunk, OpCode};
-use scanner::{Token, TokenType, Scanner};
-use vm::InterpretResult;
-use value::Value;
+use crate::chunk::{Chunk, OpCode};
+use crate::scanner::{Token, TokenType, Scanner};
+use crate::vm::InterpretResult;
+use crate::value::Value;
 
 
 #[derive(Default)]

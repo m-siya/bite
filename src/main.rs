@@ -5,15 +5,13 @@ mod vm;
 mod compiler;
 mod scanner;
 
-use chunk::OpCode;
-use chunk::Chunk;
-use value::Value;
+
 use vm::InterpretResult;
 use vm::VM;
 
 use std::env;
 use std::io;
-use std::io::prelude;
+
 
 fn main() {
     println!("Hello, bite!");
