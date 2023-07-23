@@ -24,6 +24,7 @@ macro_rules! run_time_error {
             eprintln!($format $(, $($arg), *)?);
             let line = $chunk.lines[$ip - 1];
             eprintln!("[line {}] in script", line);
+            //self.reset_stack();
         }
     };
 }
@@ -40,9 +41,9 @@ impl VM {
         VM {ip: 0, stack: Vec::new(), stack_top: 0}
     }
 
-    // pub fn reset_stack(&mut self) {
-    //     self.stack = Vec::new();
-    // }
+    pub fn reset_stack(&mut self) {
+        self.stack = Vec::new();
+    }
 
     //returns the next instruction to which ip points to
     fn read_byte(&mut self, chunk: &Chunk) -> OpCode{
@@ -99,8 +100,8 @@ impl VM {
                     let op_r = self.peek(0);
                     let op_l = self.peek(1);
                     
-                    match (op_r, op_l) {
-                        (Value::ValNumber(_), Value::ValNumber(_)) => {
+                    match (op_r.is_number(), op_l.is_number()) {
+                        (true, true) => {
                             let right_operand: Value= self.pop();
                             let left_operand: Value = self.pop();
                             self.push(Value::from(left_operand $op right_operand));
@@ -153,13 +154,13 @@ impl VM {
                 OpCode::OpDivide => BINARY_OP!(/),
                 OpCode::OpNegate => {
                     let value = self.peek(0);
-                    match value {
-                        Value::ValBool(_) => {
+                    match value.is_number() {
+                        true => {
                             let top_val = self.pop();
                             self.push(-top_val)
                         }
 
-                        _ => {
+                        false => {
                             run_time_error!(&chunk, self.ip, "Error: {}", "Operand must be a number");
                             return InterpretResult::RuntimeError;
                         }
