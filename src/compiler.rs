@@ -298,25 +298,25 @@ impl<'a> Compiler<'a> {
         self.parse_precedence(Precedence::Assignment);
     }
 
-    fn expression(&mut self) {
-    }
-    
-    //return false if error occurred
-    pub fn compile(&mut self, source: &str, chunk: Chunk) -> bool{
-        //init_scanner(source);
+    pub fn compile(&mut self, source: &str) -> Result<(), InterpretResult>
+    {
         self.scanner = Scanner::new(source);
-
-        let compiling_chunk: Chunk = chunk;
-
-        self.parser.had_error = false;
-        self.parser.panic_mode = false;
-
         self.advance();
+
         self.expression();
-        self.consume(TokenType::Eof, "Expect end of Expression");
+
+        self.consume(TokenType::Eof, "Exprect end of expression.");
+
         self.end_compiler();
 
-        !self.parser.had_error
+        if *self.parser.had_error.borrow()
+        {
+            Err(InterpretResult::CompileError)
+        }
+        else
+        {
+            Ok(())
+        }
     }
 
 }
