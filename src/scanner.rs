@@ -9,13 +9,13 @@
     Dot,
     Minus,
     Plus,
-    SemiColon,
+    Semicolon,
     Slash,
     Star,
     Bang,
     BangEqual,
     Assign, // ('=')
-    Equals, // ('==')
+    Equal, // ('==')
     Greater,
     GreaterEqual,
     Less,
@@ -282,9 +282,9 @@ impl<'a> Scanner<'a> {
             }
             '=' => {
                 if self.match_char('=') {
-                    self.make_token(TokenType::EqualEqual)
-                } else {
                     self.make_token(TokenType::Equal)
+                } else {
+                    self.make_token(TokenType::Assign)
                 }
             }
             '<' => {

@@ -4,7 +4,6 @@ mod value;
 mod vm;
 mod compiler;
 mod scanner;
-mod expression;
 
 use chunk::OpCode;
 use chunk::Chunk;
@@ -85,7 +84,7 @@ fn repl(vm: &mut VM) {
 
 fn run_file(vm: &VM, path: &str) -> io::Result<()> {
     let buffer = std::fs::read_to_string(path)?;
-    match vm.interpret(&buff) {
+    match vm.interpret(&buffer) {
         InterpretResult::CompileError => std::process::exit(65),
         InterpretResult::RuntimeError => std::process::exit(70),
         InterpretResult::Ok => std::process::exit(0),

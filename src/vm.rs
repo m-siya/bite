@@ -83,7 +83,7 @@ impl VM {
         let mut chunk: Chunk = Chunk::new();
         let mut compiler = Compiler::new(&mut chunk);
         
-        if !compiler.compile(source) {
+        if compiler.compile(source).is_err() {
             return InterpretResult::CompileError;
         }
 

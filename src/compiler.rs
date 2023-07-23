@@ -1,7 +1,8 @@
-use crate::{chunk, scanner, expression};
+use crate::{chunk, scanner, vm, value};
 use chunk::{Chunk, OpCode};
 use scanner::{Token, TokenType, Scanner};
-use expression::{ParseRule, Precedence};
+use vm::InterpretResult;
+use value::Value;
 
 
 #[derive(Default)]
@@ -198,7 +199,7 @@ impl<'a> Compiler<'a> {
         self.emit_byte(OpCode::OpReturn.into());
     }
 
-    fn make_constant($mut self) -> u8 // After emit_return
+    fn make_constant(&mut self, value: Value) -> u8 // After emit_return
     {
         if let Some(constant) = self.chunk.add_constant(value)
         {
@@ -214,7 +215,7 @@ impl<'a> Compiler<'a> {
     fn emit_constant(&mut self, value: Value) // After make_constant
     {
         let constant = self.make_constant(value);
-        self.emit_bytes(OpCode::Constant, constant);
+        self.emit_bytes(OpCode::OpConstant.into(), constant);
     }
     
     fn end_compiler(&self) {
@@ -223,17 +224,16 @@ impl<'a> Compiler<'a> {
 
     fn binary(&mut self) // After end_compiler
     {
-        let operator_type = self.parser.previous.ttype;
+        let operator_type = self.parser.previous.token_type;
         let rule = self.rules[operator_type as usize].precedence.next();
 
         self.parse_precedence(rule);
 
-        match operator_type
-        {
-            TokenType::Plus => self.emit_byte(OpCode::Add.into());
-            TokenType::Minus => self.emit_byte(OpCode::Subtract.into());
-            TokenType::Star => self.emit_byte(OpCode::Multiply.into());
-            TokenType::Slash => self.emit_byte(OpCode::Divide.into());
+        match operator_type {
+            TokenType::Plus => self.emit_byte(OpCode::OpAdd.into()),
+            TokenType::Minus => self.emit_byte(OpCode::OpSubtract.into()),
+            TokenType::Star => self.emit_byte(OpCode::OpMultiply.into()),
+            TokenType::Slash => self.emit_byte(OpCode::OpDivide.into()),
             _ => todo!(),
         }
     }
@@ -252,13 +252,13 @@ impl<'a> Compiler<'a> {
 
     fn unary(&mut self) // After number
     {
-        let operator_type = self.parser.previous.ttype;
+        let operator_type = self.parser.previous.token_type;
 
         self.parse_precedence(Precedence::Unary);
 
         if operator_type == TokenType::Minus
         {
-            self.emit_byte(OpCode::Negate.into())
+            self.emit_byte(OpCode::OpNegate.into())
         }
         else
         {
@@ -269,14 +269,14 @@ impl<'a> Compiler<'a> {
     fn parse_precedence(&mut self, precedence: Precedence) // After unary
     {
         self.advance();
-        if let Some(prefix_rule) = self.rules[self.parser.previous.ttype as usize].prefix
+        if let Some(prefix_rule) = self.rules[self.parser.previous.token_type as usize].prefix
         {
             prefix_rule(self);
 
-            while precedence <= self.rules[self.parser.current.ttype as usize].precedence
+            while precedence <= self.rules[self.parser.current.token_type as usize].precedence
             {
                 self.advance();
-                if let Some(infix_rule) = self.rules[self.parser.previous.ttype as usize].infix
+                if let Some(infix_rule) = self.rules[self.parser.previous.token_type as usize].infix
                 {
                     infix_rule(self);
                 }
@@ -305,11 +305,11 @@ impl<'a> Compiler<'a> {
 
         self.expression();
 
-        self.consume(TokenType::Eof, "Exprect end of expression.");
+        self.consume(TokenType::Eof, "Expect end of expression.");
 
         self.end_compiler();
 
-        if *self.parser.had_error.borrow()
+        if self.parser.had_error == true
         {
             Err(InterpretResult::CompileError)
         }
