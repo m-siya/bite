@@ -1,6 +1,6 @@
-use std::ops::{Neg, Add, Sub, Mul, Div};
+use std::ops::{Neg, Add, Sub, Mul, Div, Not};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum Value {
     ValBool(bool),
     ValNil(()),
@@ -119,6 +119,25 @@ impl Div for Value {
     }
 }
 
+impl Not for Value {
+    type Output = Value;
+
+    fn not(self) -> Value {
+        match self {
+            Value::ValBool(boolean) => Value::ValBool(!boolean),
+            _ => panic!("Error. Invalid argument for not operator"),
+        }
+    }
+}
+
+impl PartialOrd for Value {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (Value::ValNumber(a), Value::ValNumber(b)) => a.partial_cmp(b),
+            _ => panic!("Error. Using non numeric values for comparison."),
+        }
+    }
+}
 
 impl Value {
     pub fn is_number(&self) -> bool {

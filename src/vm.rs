@@ -1,3 +1,5 @@
+use std::fmt::Binary;
+
 use crate::debug;
 use crate::chunk::{Chunk, OpCode};
 use crate::value::Value;
@@ -145,12 +147,25 @@ impl VM {
                 OpCode::OpSubtract => BINARY_OP!(-),
                 OpCode::OpMultiply => BINARY_OP!(*),
                 OpCode::OpDivide => BINARY_OP!(/),
+                OpCode::OpNot => {
+                    let value = self.peek(0);
+                    match value.is_bool() {
+                        true => {
+                            let top_val = self.pop();
+                            self.push(!top_val);
+                        }
+                        false => {
+                            run_time_error!(&chunk, self.ip, "Error: {}", "Operand must be a boolean");
+                            return InterpretResult::RuntimeError;
+                        }
+                    }
+                }
                 OpCode::OpNegate => {
                     let value = self.peek(0);
                     match value.is_number() {
                         true => {
                             let top_val = self.pop();
-                            self.push(-top_val)
+                            self.push(-top_val);
                         }
 
                         false => {
@@ -162,6 +177,13 @@ impl VM {
                 OpCode::OpNil => self.push(Value::ValNil(())),
                 OpCode::OpTrue => self.push(Value::ValBool(true)),
                 OpCode::OpFalse => self.push(Value::ValBool(false)),
+                OpCode::OpEqual => {
+                    let a = self.pop();
+                    let b = self.pop();
+                    self.push(Value::ValBool(a == b));
+                }
+                OpCode::OpGreater => BINARY_OP!(>),
+                OpCode::OpLess => BINARY_OP!(<),
             }
         }        
     }

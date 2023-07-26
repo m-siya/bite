@@ -36,6 +36,9 @@ pub fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
         OpCode::OpNil => return simple_instruction("OP_NIL", offset),
         OpCode::OpTrue => return simple_instruction("OP_TRUE", offset),
         OpCode::OpFalse => return simple_instruction("OP_FALSE", offset),
+        OpCode::OpEqual => return simple_instruction("OP_EQUAL", offset),
+        OpCode::OpGreater => return simple_instruction("OP_GREATER", offset),
+        OpCode::OpLess => return simple_instruction("OP_LESS", offset),
 
         // _ => {
         //     println!("Unknown opcode {}", instruction);
