@@ -33,6 +33,7 @@ pub fn disassemble_instruction(chunk: &Chunk, offset: u8) -> u8 {
         OpCode::OpSubtract => return simple_instruction("OP_SUBTRACT", offset),
         OpCode::OpMultiply => return simple_instruction("OP_MULTIPLY", offset),
         OpCode::OpDivide => return simple_instruction("OP_DIVIDE", offset),
+        OpCode::OpNot => return simple_instruction("OP_NOT", offset),
         OpCode::OpNil => return simple_instruction("OP_NIL", offset),
         OpCode::OpTrue => return simple_instruction("OP_TRUE", offset),
         OpCode::OpFalse => return simple_instruction("OP_FALSE", offset),

@@ -44,7 +44,7 @@
     NumberOfTokens,
  }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 //#[derive(Copy, Clone)]
 pub struct Token {
     pub token_type: TokenType,
@@ -67,7 +67,7 @@ pub struct Scanner<'a> {
 
 impl<'a> Scanner<'a> {
 
-    pub fn new(source: &str) -> Self {
+    pub fn new(source: &'a str) -> Self {
         Self {
             //source: source.chars().collect::<Vec<char>>(),
             start: source,

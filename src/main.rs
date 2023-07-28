@@ -51,7 +51,7 @@ fn main() {
             repl(&mut vm);
         },
         2 => {
-            run_file(&vm, &args[1]);
+            run_file(&mut vm, &args[1]);
         },
         _ => {
             println!("Incorrect arguments.");
@@ -80,7 +80,7 @@ fn repl(vm: &mut VM) {
     }
 }
 
-fn run_file(vm: &VM, path: &str) -> io::Result<()> {
+fn run_file(vm: &mut VM, path: &str) -> io::Result<()> {
     let buffer = std::fs::read_to_string(path)?;
     match vm.interpret(&buffer) {
         InterpretResult::CompileError => std::process::exit(65),

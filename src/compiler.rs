@@ -1,22 +1,18 @@
+use std::marker::PhantomData;
+
 use crate::chunk::{Chunk, OpCode};
 use crate::scanner::{Token, TokenType, Scanner};
 use crate::vm::InterpretResult;
 use crate::value::Value;
 
 
-#[derive(Default)]
-pub struct Parser {
-    current: Token,
-    previous: Token,
-    had_error: bool,
-    panic_mode: bool,
-}
+
 
 #[derive(Copy, Clone)]
 pub struct ParseRule // After pub struct parser
 {
-    prefix: Option<fn(&mut Compiler)>,
-    infix: Option<fn(&mut Compiler)>,
+    prefix: Option<fn(&mut Compiler<'_>)>,
+    infix: Option<fn(&mut Compiler<'_>)>,
     precedence: Precedence,
 }
 
@@ -72,14 +68,23 @@ impl Precedence // After From<usize> for Precedence
     }
 }
 
-impl Parser {
-    pub fn new() -> Parser {
-        Parser{current: Token::default(), previous: Token::default(), had_error: false, panic_mode: false}
+#[derive(Default)]
+pub struct Parser<'a> {
+    current: Token,
+    previous: Token,
+    had_error: bool,
+    panic_mode: bool,
+    _marker: std::marker::PhantomData<&'a str>,
+}
+
+impl <'a> Parser<'a> {
+    pub fn new() -> Parser <'a>{
+        Parser{current: Token::default(), previous: Token::default(), had_error: false, panic_mode: false, _marker: PhantomData}
     }
 }
 
 pub struct Compiler<'a> {
-    parser: Parser,
+    parser: Parser<'a>,
     scanner: Scanner<'a>,
     chunk: &'a mut Chunk,
     rules: Vec<ParseRule>
@@ -180,14 +185,14 @@ impl<'a> Compiler<'a> {
 
         Self {
             parser: Parser::default(),
-            scanner: Scanner::new(&"".to_string()),
+            scanner: Scanner::new(""),
             chunk,
             rules,
         }
     }
 
     fn advance(&mut self) {
-        self.parser.previous = self.parser.current;
+        self.parser.previous = self.parser.current.clone();
         
         loop {
             self.parser.current = self.scanner.scan_token();
@@ -196,19 +201,19 @@ impl<'a> Compiler<'a> {
                 break;
             }
     
-            self.error_at_current(&self.parser.current.start);
+            self.error_at_current(&self.parser.current.start.clone());
         }
     }
 
-    fn error_at_current(&self, message: &str) {
-        self.error_at(self.parser.current, message);
+    fn error_at_current(&mut self, message: &str) {
+        self.error_at(self.parser.current.clone(), message);
     }
     
-    fn error(&self, message: &str) {
-        self.error_at(self.parser.previous, message);
+    fn error(&mut self, message: &str) {
+        self.error_at(self.parser.previous.clone(), message);
     }
     
-    fn error_at(&self, token: Token, message: &str) {
+    fn error_at(&mut self, token: Token, message: &str) {
         if self.parser.panic_mode {
             return;
         }
@@ -245,21 +250,24 @@ impl<'a> Compiler<'a> {
         self.emit_byte(byte2);
     }
     
-    fn emit_return(&self) {
+    fn emit_return(&mut self) {
         self.emit_byte(OpCode::OpReturn.into());
     }
 
     fn make_constant(&mut self, value: Value) -> u8 // After emit_return
     {
-        if let Some(constant) = self.chunk.add_constant(value)
-        {
-            constant
-        }
-        else
-        {
-            self.error("Too many constant in one chunk.");
-            0
-        }
+        // if let Some(constant) = self.chunk.add_constant(value)
+        // {
+        //     constant
+        // }
+        // else
+        // {
+        //     self.error("Too many constant in one chunk.");
+        //     0
+        // }
+
+        self.chunk.add_constant(value) as u8
+
     }
 
     fn emit_constant(&mut self, value: Value) // After make_constant
@@ -268,7 +276,7 @@ impl<'a> Compiler<'a> {
         self.emit_bytes(OpCode::OpConstant.into(), constant);
     }
     
-    fn end_compiler(&self) {
+    fn end_compiler(&mut self) {
         self.emit_return();
     }
 
@@ -311,7 +319,7 @@ impl<'a> Compiler<'a> {
 
     fn number(&mut self) // After grouping
     {
-        let value = self.parser.previous.lexeme.parse::<Value>().unwrap();
+        let value: Value = Value::ValNumber(self.parser.previous.start.parse().unwrap());
         self.emit_constant(value);
     }
 
@@ -361,7 +369,7 @@ impl<'a> Compiler<'a> {
         self.parse_precedence(Precedence::Assignment);
     }
 
-    pub fn compile(&mut self, source: &str) -> Result<(), InterpretResult>
+    pub fn compile(&mut self, source: &'a str) -> Result<(), InterpretResult>
     {
         self.scanner = Scanner::new(source);
         self.advance();

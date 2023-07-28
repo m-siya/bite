@@ -67,10 +67,10 @@ impl Chunk {
     }
 
     // add_constant returns u8 
-    pub fn add_constant(&mut self, value: Value) -> Option<u8> 
+    pub fn add_constant(&mut self, value: Value) -> usize
     {
-        let idx = self.constants.push(value);
-        u8::try_from(idx).ok()
+        self.constants.push(value);
+        self.constants.len() - 1
     }
 
     pub fn get_constant(&self, index: usize) -> Value {
